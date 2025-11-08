@@ -57,8 +57,12 @@ All colors MUST be HSL.
     --sidebar-ring: 217.2 91.2% 59.8%;
     
     --gradient-primary: linear-gradient(135deg, hsl(210, 95%, 42%) 0%, hsl(175, 70%, 50%) 100%);
-    --shadow-card: 0 2px 8px -2px hsl(215 25% 15% / 0.08);
-    --shadow-elevated: 0 8px 24px -4px hsl(215 25% 15% / 0.12);
+    --gradient-hero: linear-gradient(135deg, hsl(210, 95%, 42%) 0%, hsl(175, 70%, 50%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0, 0%, 100%) 0%, hsl(210, 40%, 99%) 100%);
+    --shadow-card: 0 4px 20px -2px hsl(215 25% 15% / 0.08);
+    --shadow-elevated: 0 12px 40px -8px hsl(215 25% 15% / 0.15);
+    --shadow-hover: 0 16px 48px -12px hsl(215 25% 15% / 0.2);
+    --glow-primary: 0 0 40px hsl(210 95% 42% / 0.15);
   }
 
   .dark {
@@ -109,8 +113,12 @@ All colors MUST be HSL.
     --sidebar-ring: 217.2 91.2% 59.8%;
     
     --gradient-primary: linear-gradient(135deg, hsl(210, 95%, 55%) 0%, hsl(175, 70%, 50%) 100%);
-    --shadow-card: 0 2px 8px -2px hsl(0 0% 0% / 0.3);
-    --shadow-elevated: 0 8px 24px -4px hsl(0 0% 0% / 0.4);
+    --gradient-hero: linear-gradient(135deg, hsl(210, 95%, 55%) 0%, hsl(175, 70%, 50%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(215, 28%, 12%) 0%, hsl(215, 30%, 10%) 100%);
+    --shadow-card: 0 4px 20px -2px hsl(0 0% 0% / 0.4);
+    --shadow-elevated: 0 12px 40px -8px hsl(0 0% 0% / 0.5);
+    --shadow-hover: 0 16px 48px -12px hsl(0 0% 0% / 0.6);
+    --glow-primary: 0 0 40px hsl(210 95% 55% / 0.25);
   }
 }
 
