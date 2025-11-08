@@ -57,9 +57,14 @@ Respond ONLY with valid JSON in this exact format:
     }
 
     const data = await response.json();
-    const content = data.choices[0].message.content;
+    let content = data.choices[0].message.content;
     
     console.log('AI response:', content);
+    
+    // Remove markdown code block syntax if present
+    content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+    
+    console.log('Cleaned content:', content);
     
     // Parse the JSON response
     const analysis = JSON.parse(content);
