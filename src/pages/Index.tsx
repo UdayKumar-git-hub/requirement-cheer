@@ -10,12 +10,153 @@ import { Loader2, TrendingUp, Users, AlertCircle } from "lucide-react";
 import SentimentChart from "@/components/SentimentChart";
 import FeedbackCard from "@/components/FeedbackCard";
 
-interface Analysis {
-  sentiment: "positive" | "neutral" | "negative";
-  confidence: number;
-  reasoning: string;
-  themes: string[];
-  urgency: "low" | "medium" | "high";
+export interface Analysis {
+  sentiment_analysis: {
+    sentiment: "positive" | "negative" | "neutral" | "mixed";
+    confidence: number;
+    emotional_indicators: string[];
+    potential_risks: string[];
+  };
+  requirement_quality: {
+    score: number;
+    is_complete: boolean;
+    is_clear: boolean;
+    is_testable: boolean;
+    is_feasible: boolean;
+    is_consistent: boolean;
+    issues: string[];
+    improvements: string[];
+  };
+  priority_estimate: {
+    priority: "high" | "medium" | "low";
+    reason: string;
+    impact_if_ignored: string;
+  };
+  conflict_dependency_analysis: {
+    has_conflicts: boolean;
+    conflicts: string[];
+    has_dependencies: boolean;
+    dependencies: string[];
+    resolution_suggestions: string[];
+  };
+  rewritten_requirement: {
+    requirement_statement: string;
+    acceptance_criteria: string[];
+    test_cases: string[];
+    user_story: string;
+  };
+  visual_summary: {
+    bullet_summary: string[];
+    risk_heat_score: number;
+    stakeholder_mood: string;
+    requirement_stability_score: number;
+  };
+  recommendations: {
+    next_actions: string[];
+    inform_stakeholders: string[];
+    validation_needed: string[];
+    future_improvements: string[];
+  };
+  emotion_timeline: {
+    segments: Array<{
+      sentence: string;
+      emotion: string;
+      intensity: number;
+      shift_detected: boolean;
+    }>;
+    overall_trajectory: string;
+  };
+  intent_emotion_mismatch: {
+    mismatch_detected: boolean;
+    stated_intent: string;
+    detected_emotion: string;
+    hidden_meaning: string;
+    confidence: number;
+  };
+  pressure_index: {
+    score: number;
+    emotional_weight: number;
+    keyword_intensity: number;
+    time_pressure: number;
+    urgency_level: string;
+    response_deadline: string;
+  };
+  micro_sentiment_chunks: Array<{
+    chunk_id: number;
+    text: string;
+    sentiment: string;
+    key_phrase: string;
+    intensity: number;
+  }>;
+  trust_loss_prediction: {
+    trust_damage_risk: number;
+    abandonment_likelihood: number;
+    escalation_probability: number;
+    warning_signs: string[];
+    intervention_urgency: string;
+  };
+  accountability_heatmap: {
+    ui_ux: number;
+    backend: number;
+    qa: number;
+    product: number;
+    compliance: number;
+    management: number;
+    primary_responsible_team: string;
+  };
+  sarcasm_detection: {
+    sarcasm_detected: boolean;
+    passive_aggression_score: number;
+    hidden_complaints: string[];
+    frustrated_politeness: boolean;
+    actual_sentiment: string;
+  };
+  root_cause_emotion: {
+    root_emotion: string;
+    underlying_cause: string;
+    emotional_trigger: string;
+    resolution_approach: string;
+  };
+  escalation_probability: {
+    overall_score: number;
+    support_ticket_risk: number;
+    negative_review_risk: number;
+    churn_risk: number;
+    management_complaint_risk: number;
+    intervention_needed: boolean;
+  };
+  mood_to_feature_mapping: Array<{
+    emotion: string;
+    feature_area: string;
+    severity: string;
+    recommended_action: string;
+  }>;
+  emotion_forecast: {
+    "7_day_prediction": {
+      predicted_sentiment: string;
+      confidence: number;
+      trend: string;
+    };
+    "30_day_prediction": {
+      predicted_sentiment: string;
+      confidence: number;
+      trend: string;
+    };
+    forecast_summary: string;
+  };
+  personality_detector: {
+    communication_style: string;
+    personality_traits: string[];
+    engagement_tips: string[];
+    preferred_communication_method: string;
+  };
+  sentiment_action_fusion: {
+    fusion_score: number;
+    severity_component: number;
+    solvability_component: number;
+    action_urgency: string;
+    recommended_response_time: string;
+  };
 }
 
 interface FeedbackItem {
@@ -63,7 +204,7 @@ const Index = () => {
 
       toast({
         title: "Analysis complete",
-        description: `Sentiment: ${data.sentiment} (${Math.round(data.confidence * 100)}% confidence)`,
+        description: `Sentiment: ${data.sentiment_analysis.sentiment} | Priority: ${data.priority_estimate.priority} | Quality: ${data.requirement_quality.score}/100`,
       });
     } catch (error) {
       console.error('Error analyzing feedback:', error);
@@ -78,41 +219,52 @@ const Index = () => {
   };
 
   const sentimentDistribution = results.reduce((acc, item) => {
-    acc[item.analysis.sentiment] = (acc[item.analysis.sentiment] || 0) + 1;
+    acc[item.analysis.sentiment_analysis.sentiment] = (acc[item.analysis.sentiment_analysis.sentiment] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto py-8 px-4 max-w-7xl">
-        <header className="mb-12 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent mb-6 shadow-lg">
-            <TrendingUp className="w-8 h-8 text-primary-foreground" />
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-background/95">
+      {/* Hero Section */}
+      <div className="relative overflow-hidden border-b border-border/50">
+        <div className="absolute inset-0 bg-gradient-hero opacity-5"></div>
+        <div className="container mx-auto px-4 py-16 max-w-7xl relative">
+          <div className="text-center animate-fade-in">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-primary mb-6 shadow-glow">
+              <TrendingUp className="w-10 h-10 text-primary-foreground" />
+            </div>
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 tracking-tight">
+              <span className="bg-gradient-primary bg-clip-text text-transparent">
+                Stakeholder Sentiment
+              </span>
+              <br />
+              <span className="text-foreground">Analyzer</span>
+            </h1>
+            <p className="text-muted-foreground text-xl max-w-2xl mx-auto leading-relaxed">
+              Transform feedback into actionable insights with AI-powered sentiment analysis
+            </p>
           </div>
-          <h1 className="text-4xl font-bold mb-3 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            Stakeholder Sentiment Analyzer
-          </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            AI-powered analysis of stakeholder feedback and requirement validation
-          </p>
-        </header>
+        </div>
+      </div>
+
+      <div className="container mx-auto py-12 px-4 max-w-7xl">
 
         <div className="grid lg:grid-cols-2 gap-8 mb-12">
-          <Card className="shadow-lg border-0" style={{ boxShadow: 'var(--shadow-card)' }}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-primary" />
+          <Card className="shadow-elevated hover:shadow-hover transition-all duration-300 border-primary/10 bg-gradient-card backdrop-blur-sm">
+            <CardHeader className="space-y-3">
+              <CardTitle className="text-2xl flex items-center gap-3">
+                <Users className="w-6 h-6 text-primary" />
                 Input Feedback
               </CardTitle>
-              <CardDescription>
-                Enter stakeholder feedback or requirements for sentiment analysis
+              <CardDescription className="text-base">
+                Enter stakeholder feedback or requirements for instant AI analysis
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <label className="text-sm font-medium mb-2 block">Stakeholder Type</label>
+            <CardContent className="space-y-6">
+              <div className="space-y-3">
+                <label className="text-sm font-semibold">Stakeholder Type</label>
                 <Select value={stakeholderType} onValueChange={setStakeholderType}>
-                  <SelectTrigger>
+                  <SelectTrigger className="text-base border-2">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -125,26 +277,26 @@ const Index = () => {
                 </Select>
               </div>
 
-              <div>
-                <label className="text-sm font-medium mb-2 block">Feedback / Requirements</label>
+              <div className="space-y-3">
+                <label className="text-sm font-semibold">Feedback / Requirements</label>
                 <Textarea
                   value={feedback}
                   onChange={(e) => setFeedback(e.target.value)}
                   placeholder="Enter stakeholder feedback, requirements, or validation comments..."
-                  className="min-h-[200px] resize-none"
+                  className="min-h-[200px] resize-none text-base border-2 focus:border-primary/50 transition-colors"
                 />
               </div>
 
               <Button 
                 onClick={analyzeFeedback} 
                 disabled={isAnalyzing || !feedback.trim()}
-                className="w-full"
+                className="w-full h-12 shadow-glow hover:shadow-hover transition-all duration-300"
                 size="lg"
               >
                 {isAnalyzing ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Analyzing...
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Analyzing with AI...
                   </>
                 ) : (
                   "Analyze Sentiment"
@@ -153,23 +305,23 @@ const Index = () => {
             </CardContent>
           </Card>
 
-          <Card className="shadow-lg border-0" style={{ boxShadow: 'var(--shadow-card)' }}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-primary" />
+          <Card className="shadow-elevated hover:shadow-hover transition-all duration-300 border-primary/10 bg-gradient-card backdrop-blur-sm">
+            <CardHeader className="space-y-3">
+              <CardTitle className="text-2xl flex items-center gap-3">
+                <AlertCircle className="w-6 h-6 text-primary" />
                 Sentiment Distribution
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-base">
                 Overall sentiment breakdown of analyzed feedback
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-4">
               {results.length > 0 ? (
                 <SentimentChart distribution={sentimentDistribution} />
               ) : (
-                <div className="flex flex-col items-center justify-center h-[300px] text-muted-foreground">
-                  <TrendingUp className="w-16 h-16 mb-4 opacity-20" />
-                  <p className="text-center">No analysis yet.<br />Start by analyzing some feedback.</p>
+                <div className="flex flex-col items-center justify-center h-[350px] text-muted-foreground">
+                  <TrendingUp className="w-20 h-20 mb-4 opacity-10" />
+                  <p className="text-center text-base">No analysis yet.<br />Start by analyzing some feedback.</p>
                 </div>
               )}
             </CardContent>
@@ -177,21 +329,24 @@ const Index = () => {
         </div>
 
         {results.length > 0 && (
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold">Analysis Results</h2>
-              <Badge variant="secondary" className="text-sm">
+          <div className="animate-fade-in">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="h-1 flex-1 bg-gradient-primary rounded-full"></div>
+              <h2 className="text-3xl font-bold">Analysis Results</h2>
+              <Badge variant="secondary" className="text-base px-4 py-2">
                 {results.length} {results.length === 1 ? 'analysis' : 'analyses'}
               </Badge>
+              <div className="h-1 flex-1 bg-gradient-primary rounded-full"></div>
             </div>
             <div className="grid gap-6">
-              {results.map((result) => (
-                <FeedbackCard
-                  key={result.id}
-                  feedback={result.feedback}
-                  stakeholderType={result.stakeholderType}
-                  analysis={result.analysis}
-                />
+              {results.map((result, index) => (
+                <div key={result.id} className="animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
+                  <FeedbackCard
+                    feedback={result.feedback}
+                    stakeholderType={result.stakeholderType}
+                    analysis={result.analysis}
+                  />
+                </div>
               ))}
             </div>
           </div>

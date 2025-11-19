@@ -20,24 +20,43 @@ const SentimentChart = ({ distribution }: SentimentChartProps) => {
   }
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
+    <ResponsiveContainer width="100%" height={350}>
       <PieChart>
         <Pie
           data={data}
           cx="50%"
           cy="50%"
-          labelLine={false}
+          labelLine={true}
           label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-          outerRadius={100}
+          outerRadius={120}
+          innerRadius={60}
           fill="#8884d8"
           dataKey="value"
+          strokeWidth={3}
+          stroke="hsl(var(--background))"
         >
           {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={entry.color} />
+            <Cell 
+              key={`cell-${index}`} 
+              fill={entry.color}
+              className="hover:opacity-80 transition-opacity cursor-pointer"
+            />
           ))}
         </Pie>
-        <Tooltip />
-        <Legend />
+        <Tooltip 
+          contentStyle={{ 
+            background: 'hsl(var(--card))',
+            border: '1px solid hsl(var(--border))',
+            borderRadius: '0.5rem',
+            padding: '0.75rem'
+          }}
+        />
+        <Legend 
+          verticalAlign="bottom" 
+          height={36}
+          iconType="circle"
+          wrapperStyle={{ paddingTop: '1rem' }}
+        />
       </PieChart>
     </ResponsiveContainer>
   );
