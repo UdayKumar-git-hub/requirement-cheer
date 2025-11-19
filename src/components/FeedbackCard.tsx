@@ -1,9 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { CheckCircle2, XCircle, AlertTriangle, TrendingUp, Users, Lightbulb, Target, Shield, Zap } from "lucide-react";
+import { CheckCircle2, XCircle, AlertTriangle, TrendingUp, Users, Lightbulb, Target, Shield, Zap, Sparkles } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Analysis } from "@/pages/Index";
+import AdvancedAnalysisSection from "./AdvancedAnalysisSection";
 
 interface FeedbackCardProps {
   feedback: string;
@@ -60,7 +62,13 @@ const FeedbackCard = ({ feedback, stakeholderType, analysis }: FeedbackCardProps
       <CardHeader className="space-y-4">
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div className="flex-1 min-w-0">
-            <CardTitle className="text-xl mb-2">Stakeholder Feedback Analysis</CardTitle>
+            <div className="flex items-center gap-2 mb-2">
+              <CardTitle className="text-xl">Stakeholder Feedback Analysis</CardTitle>
+              <Badge className="bg-gradient-primary text-primary-foreground">
+                <Sparkles className="w-3 h-3 mr-1" />
+                20 AI Features
+              </Badge>
+            </div>
             <p className="text-sm text-muted-foreground line-clamp-3">{feedback}</p>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
@@ -74,7 +82,17 @@ const FeedbackCard = ({ feedback, stakeholderType, analysis }: FeedbackCardProps
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-6">
+      <CardContent>
+        <Tabs defaultValue="core" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="core">Core Analysis</TabsTrigger>
+            <TabsTrigger value="advanced">
+              <Sparkles className="w-3 h-3 mr-1" />
+              Advanced AI Features
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="core" className="space-y-6 mt-6">{/* ... keep existing code */}
         {/* Sentiment Analysis */}
         <div className={`p-4 rounded-lg border ${getSentimentBg(analysis.sentiment_analysis.sentiment)}`}>
           <div className="flex items-center justify-between mb-3">
@@ -340,6 +358,12 @@ const FeedbackCard = ({ feedback, stakeholderType, analysis }: FeedbackCardProps
             </ul>
           </div>
         )}
+          </TabsContent>
+
+          <TabsContent value="advanced" className="mt-6">
+            <AdvancedAnalysisSection analysis={analysis} />
+          </TabsContent>
+        </Tabs>
       </CardContent>
     </Card>
   );
