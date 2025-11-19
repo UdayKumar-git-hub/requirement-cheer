@@ -57,6 +57,106 @@ export interface Analysis {
     validation_needed: string[];
     future_improvements: string[];
   };
+  emotion_timeline: {
+    segments: Array<{
+      sentence: string;
+      emotion: string;
+      intensity: number;
+      shift_detected: boolean;
+    }>;
+    overall_trajectory: string;
+  };
+  intent_emotion_mismatch: {
+    mismatch_detected: boolean;
+    stated_intent: string;
+    detected_emotion: string;
+    hidden_meaning: string;
+    confidence: number;
+  };
+  pressure_index: {
+    score: number;
+    emotional_weight: number;
+    keyword_intensity: number;
+    time_pressure: number;
+    urgency_level: string;
+    response_deadline: string;
+  };
+  micro_sentiment_chunks: Array<{
+    chunk_id: number;
+    text: string;
+    sentiment: string;
+    key_phrase: string;
+    intensity: number;
+  }>;
+  trust_loss_prediction: {
+    trust_damage_risk: number;
+    abandonment_likelihood: number;
+    escalation_probability: number;
+    warning_signs: string[];
+    intervention_urgency: string;
+  };
+  accountability_heatmap: {
+    ui_ux: number;
+    backend: number;
+    qa: number;
+    product: number;
+    compliance: number;
+    management: number;
+    primary_responsible_team: string;
+  };
+  sarcasm_detection: {
+    sarcasm_detected: boolean;
+    passive_aggression_score: number;
+    hidden_complaints: string[];
+    frustrated_politeness: boolean;
+    actual_sentiment: string;
+  };
+  root_cause_emotion: {
+    root_emotion: string;
+    underlying_cause: string;
+    emotional_trigger: string;
+    resolution_approach: string;
+  };
+  escalation_probability: {
+    overall_score: number;
+    support_ticket_risk: number;
+    negative_review_risk: number;
+    churn_risk: number;
+    management_complaint_risk: number;
+    intervention_needed: boolean;
+  };
+  mood_to_feature_mapping: Array<{
+    emotion: string;
+    feature_area: string;
+    severity: string;
+    recommended_action: string;
+  }>;
+  emotion_forecast: {
+    "7_day_prediction": {
+      predicted_sentiment: string;
+      confidence: number;
+      trend: string;
+    };
+    "30_day_prediction": {
+      predicted_sentiment: string;
+      confidence: number;
+      trend: string;
+    };
+    forecast_summary: string;
+  };
+  personality_detector: {
+    communication_style: string;
+    personality_traits: string[];
+    engagement_tips: string[];
+    preferred_communication_method: string;
+  };
+  sentiment_action_fusion: {
+    fusion_score: number;
+    severity_component: number;
+    solvability_component: number;
+    action_urgency: string;
+    recommended_response_time: string;
+  };
 }
 
 interface FeedbackItem {
