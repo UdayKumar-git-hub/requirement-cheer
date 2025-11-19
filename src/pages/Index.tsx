@@ -10,12 +10,53 @@ import { Loader2, TrendingUp, Users, AlertCircle } from "lucide-react";
 import SentimentChart from "@/components/SentimentChart";
 import FeedbackCard from "@/components/FeedbackCard";
 
-interface Analysis {
-  sentiment: "positive" | "neutral" | "negative";
-  confidence: number;
-  reasoning: string;
-  themes: string[];
-  urgency: "low" | "medium" | "high";
+export interface Analysis {
+  sentiment_analysis: {
+    sentiment: "positive" | "negative" | "neutral" | "mixed";
+    confidence: number;
+    emotional_indicators: string[];
+    potential_risks: string[];
+  };
+  requirement_quality: {
+    score: number;
+    is_complete: boolean;
+    is_clear: boolean;
+    is_testable: boolean;
+    is_feasible: boolean;
+    is_consistent: boolean;
+    issues: string[];
+    improvements: string[];
+  };
+  priority_estimate: {
+    priority: "high" | "medium" | "low";
+    reason: string;
+    impact_if_ignored: string;
+  };
+  conflict_dependency_analysis: {
+    has_conflicts: boolean;
+    conflicts: string[];
+    has_dependencies: boolean;
+    dependencies: string[];
+    resolution_suggestions: string[];
+  };
+  rewritten_requirement: {
+    requirement_statement: string;
+    acceptance_criteria: string[];
+    test_cases: string[];
+    user_story: string;
+  };
+  visual_summary: {
+    bullet_summary: string[];
+    risk_heat_score: number;
+    stakeholder_mood: string;
+    requirement_stability_score: number;
+  };
+  recommendations: {
+    next_actions: string[];
+    inform_stakeholders: string[];
+    validation_needed: string[];
+    future_improvements: string[];
+  };
 }
 
 interface FeedbackItem {
@@ -63,7 +104,7 @@ const Index = () => {
 
       toast({
         title: "Analysis complete",
-        description: `Sentiment: ${data.sentiment} (${Math.round(data.confidence * 100)}% confidence)`,
+        description: `Sentiment: ${data.sentiment_analysis.sentiment} | Priority: ${data.priority_estimate.priority} | Quality: ${data.requirement_quality.score}/100`,
       });
     } catch (error) {
       console.error('Error analyzing feedback:', error);
@@ -78,7 +119,7 @@ const Index = () => {
   };
 
   const sentimentDistribution = results.reduce((acc, item) => {
-    acc[item.analysis.sentiment] = (acc[item.analysis.sentiment] || 0) + 1;
+    acc[item.analysis.sentiment_analysis.sentiment] = (acc[item.analysis.sentiment_analysis.sentiment] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
 
