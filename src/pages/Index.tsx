@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -6,7 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, TrendingUp, Users, AlertCircle } from "lucide-react";
+import { Loader2, TrendingUp, Users, AlertCircle, Mic, MicOff } from "lucide-react";
+import useSpeechRecognition from "@/hooks/use-speech";
 import SentimentChart from "@/components/SentimentChart";
 import FeedbackCard from "@/components/FeedbackCard";
 
@@ -218,6 +219,25 @@ const Index = () => {
     }
   };
 
+  // Speech recognition integration
+  const { listening, finalTranscript, error: speechError, start, stop } = useSpeechRecognition({ lang: 'en-US' });
+  const lastAppendedRef = useRef<string>('');
+
+  // Append final transcript to feedback when new final text arrives
+  useEffect(() => {
+    if (finalTranscript && finalTranscript !== lastAppendedRef.current) {
+      setFeedback((prev) => (prev ? prev + ' ' + finalTranscript : finalTranscript));
+      lastAppendedRef.current = finalTranscript;
+      toast({ title: 'Voice input added', description: 'Speech was appended to the feedback.' });
+    }
+  }, [finalTranscript]);
+
+  useEffect(() => {
+    if (speechError) {
+      toast({ title: 'Speech recognition', description: speechError, variant: 'destructive' });
+    }
+  }, [speechError]);
+
   const sentimentDistribution = results.reduce((acc, item) => {
     acc[item.analysis.sentiment_analysis.sentiment] = (acc[item.analysis.sentiment_analysis.sentiment] || 0) + 1;
     return acc;
@@ -287,21 +307,42 @@ const Index = () => {
                 />
               </div>
 
-              <Button 
-                onClick={analyzeFeedback} 
-                disabled={isAnalyzing || !feedback.trim()}
-                className="w-full h-12 shadow-glow hover:shadow-hover transition-all duration-300"
-                size="lg"
-              >
-                {isAnalyzing ? (
-                  <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    Analyzing with AI...
-                  </>
-                ) : (
-                  "Analyze Sentiment"
-                )}
-              </Button>
+              <div className="flex items-center gap-3">
+                <Button
+                  onClick={() => (listening ? stop() : start())}
+                  disabled={isAnalyzing}
+                  className="w-40 h-12"
+                  size="md"
+                >
+                  {listening ? (
+                    <>
+                      <MicOff className="mr-2 h-4 w-4" />
+                      Stop
+                    </>
+                  ) : (
+                    <>
+                      <Mic className="mr-2 h-4 w-4" />
+                      Record
+                    </>
+                  )}
+                </Button>
+
+                <Button 
+                  onClick={analyzeFeedback} 
+                  disabled={isAnalyzing || !feedback.trim()}
+                  className="flex-1 h-12 shadow-glow hover:shadow-hover transition-all duration-300"
+                  size="lg"
+                >
+                  {isAnalyzing ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Analyzing with AI...
+                    </>
+                  ) : (
+                    "Analyze Sentiment"
+                  )}
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
